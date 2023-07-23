@@ -45,6 +45,31 @@ class mdlUsuario {
         return $mensaje;
     }
 
+    //funcion editar usuario
+    public static function mdlUpdateUsuario($Nombres, $Apellidos, $Correo, $idUsuario){
+        
+        $mensaje = "";
+
+        try {
+
+            $objRespuesta = Conexion::conectar()->prepare("UPDATE  usuario  SET Nombres = :Nombres, Apellidos = :Apellidos, Correo = :Correo  WHERE idUsuario = :id"); 
+            $objRespuesta->bindParam(":Nombres", $Nombres);
+            $objRespuesta->bindParam(":Apellidos", $Apellidos);
+            $objRespuesta->bindParam(":Correo", $Correo);
+            $objRespuesta->bindParam(":id", $idUsuario);
+            $objRespuesta->execute();
+
+            $mensaje = "ok";
+
+            
+
+        }catch(Exception $e){
+            $mensaje = $e;
+        }
+        return $mensaje;
+    }
+
+
     // funcion eliminar usuario
     public static function mdlEliminarUsuario($idUsuario){
         $mensaje = "";  
@@ -64,41 +89,6 @@ class mdlUsuario {
         return $mensaje;
     }
 
-    
-    
 
-    /*public static function mdlFiltrarUsuario($idUsuario){
-
-        $listarUsuarioF = "";
-
-        try{
-            $respuestaUsuarioF = Conexion::conectar()->prepare("SELECT * FROM actividad WHERE fk_Usuario = ?");
-            $respuestaUsuarioF->execute([$idUsuario]);
-            $listarUsuarioF = $respuestaUsuarioF->fetchAll();
-            $respuestaUsuarioF= null;
-
-        }catch (Exception $error){
-            $listarUsuarioF  = $error;
-        }
-
-        return $listarUsuarioF;
-    }
-
-    public static function mdlListarTodasUsuarios(){
-
-        $listarUsuariosTdo = "";
-
-        try{
-            $respuestaUsuarioT= Conexion::conectar()->prepare("SELECT * FROM usuario");
-            $respuestaUsuarioT->bindParam(":fk_Usuario", $fk_Usuario);
-            $respuestaUsuarioT->execute();
-            $$listarUsuariosTdo = $respuestaUsuarioT->fetchAll();
-            $respuestaUsuarioT= null;
-
-        }catch(Exception $e){
-            $listarProducto = $e;
-        }
-        return $listarProducto;
-    }*/
 
 }

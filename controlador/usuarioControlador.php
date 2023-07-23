@@ -20,6 +20,11 @@ class ctrUsuario{
        echo json_encode($respuestaUsuarioM);
     }
 
+    public function ctrUpdateUsuario(){
+        $respuestaUsuarioM = mdlUsuario::mdlUpdateUsuario($this->Nombres,  $this->Apellidos, $this->Correo, $this->idUsuario);
+        echo json_encode($respuestaUsuarioM);
+    }
+
     public function ctrEliminarUsuario(){
         $respuestaUsuarioM =  mdlUsuario::mdlEliminarUsuario($this->idUsuario);
         echo json_encode($respuestaUsuarioM);
@@ -49,3 +54,13 @@ if(isset($_POST["eliminarUsuario"])){
     $objUsuario -> ctrEliminarUsuario();
 }
 
+
+if (isset($_POST["updateNombres"], $_POST["updateApellidos"], $_POST["updateCorreo"],$_POST["updateIdUsuario"])){
+
+    $objPersonaje = new ctrUsuario ();
+    $objPersonaje-> Nombres = $_POST["updateNombres"];
+    $objPersonaje-> Apellidos = $_POST["updateApellidos"];
+    $objPersonaje-> Correo = $_POST["updateCorreo"];
+    $objPersonaje-> idUsuario = $_POST["updateIdUsuario"];
+    $objPersonaje-> ctrUpdateUsuario();
+}

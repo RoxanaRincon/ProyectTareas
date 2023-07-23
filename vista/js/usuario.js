@@ -1,9 +1,10 @@
 $(function(){
 
-    //var formularioUsuario = false;
     var objTablaUsuario = null;
     var dataSetUsuario = [];
-    //var tabla = null;
+    var formulario = false;
+    var formularioEditar = false;
+    var usuarioActual= '';
 
     listarDatosUsuario();
 
@@ -28,8 +29,8 @@ $(function(){
             console.log(respuesta)
             function listarUsuario(item, index) {
                 objBotones = '<div class="btn-group">';
-                objBotones += '<button id="btn-EditarUsuario" type="button" class="btn btn-secondary" Usuario="' + item.idUsuario +  '" Nombres="' + item.Nombres + '" Apellidos="' + item.Apellidos + '" Correo="' + item.Correo + '"><i class="bi bi-pencil-square"></i></button>';
-                objBotones += '<button id="btn-eliminarUsuario" type="button" class="btn btn-dark" Usuario="' + item.idUsuario + '" ><i class="bi bi-trash"></i></button>';
+                objBotones += '<button id="btn-EditarUsuario" type="button" class="btn btn-secondary" usuario="' + item.idUsuario +  '" Nombres="' + item.Nombres + '" Apellidos="' + item.Apellidos + '" Correo="' + item.Correo + '"><i class="bi bi-pencil-square"></i></button>';
+                objBotones += '<button id="btn-eliminarUsuario" type="button" class="btn btn-dark" usuario="' + item.idUsuario + '" ><i class="bi bi-trash"></i></button>';
                 objBotones += '</div>';
 
                 dataSetUsuario.push([item.Nombres, item.Apellidos, item.Correo, objBotones]);
@@ -87,6 +88,119 @@ $(function(){
         })
     })
 
+    //------------------------- Editar Usuario ----------------------
+    $("#tablaUsuario").on("click", "#btn-EditarUsuario", function(){
+
+       
+        $("#contenedorFormularios").hide();
+        $("#contenedorEditarUsuario").show();
+        var usuario = $(this).attr("usuario");
+        var Nombres = $(this).attr("Nombres");
+        var Apellidos = $(this).attr("Apellidos");
+        var Correo = $(this).attr("Correo");
+        
+
+        $("#txt_EditNombre").val(Nombres);
+        $("#txt_EditApellido").val(Apellidos);
+        $("#txt_EditCorreo").val(Correo);
+        $("#btnEditarUsuario").attr("usuario", usuario);
+        
+        if (usuarioActual != usuario){
+            
+            usuarioActual = usuario;
+            formularioEditar = false;
+        }
+
+       // $("#contenedorEditarUsuario").hide();
+
+        if (formularioEditar == false){
+            $("#contenedorEditarUsuarior").fadeIn(1000);
+            
+            formularioEditar = true;
+            //cargarDatosSelectCategoriaformEdit();
+        } else {
+            $("#contenedorEditarUsuarior").hide();
+          
+            formularioEditar = false;
+        }
+
+        $("#contenedorTablaUsuario").show();
+        cargarTablaUsuario(dataSetUsuario);
+
+    })
+
+    //editar  registro de usuario
+    $("#btnEditarUsuario").on("click", function(){
+        var idUsuario = usuarioActual;
+       
+        var Nombres = $("#txt_EditNombre").val();
+        var Apellidos = $("#txt_EditApellido").val();
+        var Correo =  $("#txt_EditCorreo").val();
+        
+
+        var registroEditado = new FormData();
+        
+        registroEditado.append("updateNombres", Nombres);
+        registroEditado.append("updateApellidos", Apellidos);
+        registroEditado.append("updateCorreo", Correo);
+        registroEditado.append("updateIdUsuario", idUsuario);
+   
+        $.ajax({
+            url: "../controlador/usuarioControlador.php",
+            type: "POST",
+            dataType: "JSON",
+            data: registroEditado,
+            cache: false,
+            contentType: false,
+            processData: false
+        }).done(function(respuesta) {
+
+             console.log(respuesta);
+             $("#txt_EditNombre").val("");
+             $("#txt_EditApellido").val("");
+            $("#txt_EditCorreo").val("");
+           
+            
+            $("#contenedorEditarUsuario").hide();
+
+
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Usuario Actualizado correctamente',
+                showConfirmButton: false,
+                timer: 1500
+            })
+
+            listarDatosUsuario();
+    })
+   
+    $("#contenedorTablaUsuario").show();
+    cargarTablaUsuario(dataSetUsuario);
+
+    })
+
+    // boton registarr usuario
+
+    $("#btnUsuario").on("click", function() {
+        $("#contenedorEditarUsuario").hide();
+        $("#datosTablaUsuario").html("");
+
+        if (formulario == false) {
+            $("#contenedorFormularios").fadeIn(1000);
+            $("#contenedorTabla").removeClass('col-sm-12').addClass('col-sm-8');
+            formulario = true;
+        } else {
+            $("#contenedorFormularios").hide();
+            $("#contenedorTablaUsuario").removeClass('col-sm-8').addClass('col-sm-12').hide();
+            formulario = false;
+        }
+
+
+        $("#contenedorTablaUsuario").slideDown("slow");
+        cargarTablaUsuario(dataSetUsuario);
+       
+    })
     
     //------------------------- Eliminar Usuario ----------------------
     $("#tablaUsuario").on("click", "#btn-eliminarUsuario", function() {
@@ -101,9 +215,9 @@ $(function(){
             cancelButtonText: 'Cancelar'
         }).then(async(result) => {
             if (result.isConfirmed) {
-                var idUsuario = $(this).attr("idUsuario");
+                var Usuario = $(this).attr("usuario");
                 var objData = new FormData();
-                objData.append("eliminarUsuario", idUsuario);
+                objData.append("eliminarUsuario", Usuario);
                 $.ajax({
                     url: "../controlador/usuarioControlador.php",
                     type: "POST",
@@ -113,14 +227,31 @@ $(function(){
                     contentType: false,
                     processData: false
                 }).done(function(respuesta) {
-                    
-                    Swal.fire({
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Usuario Eliminado correctamente',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
+                    console.log(respuesta);
+
+                    if (respuesta != "ok" ){
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'error',
+                            title: 'asegurese de primero  eliminar todas las tareas relacionadas al usuario o reasingnarlas',
+                            showConfirmButton: false,
+                            timer: 3000
+                        })
+
+                    } else {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Usuario Eliminado correctamente',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+
+
+                    }
+
+
+
                     formularioEmpleados = false;
                     listarDatosUsuario();
                 })
