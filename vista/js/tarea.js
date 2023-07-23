@@ -5,61 +5,41 @@ $(function() {
     var formulario = false;
     var formularioEditar = false;
     var ProductoActual= '';
-    
-    listarDatos();
+    cargarDatosUsuarioSelect();
+    listarDatosTarea();
 
-    $("#btnGuardarProducto").on("click", function() {
+    // ------------------------- listar el selct de usuarios -----------
 
-        //En este punto asigno a las variable el valor que obtengo de los campos del formulario
-        var cantidadProducto = $("#txt_cantidadProducto").val();
-        var valorProducto = $("#txt_valorProducto").val();
-        var descripcionProducto = $("#txt_descripcionProducto").val();
-        var NombreProducto = $("#txt_NombreProducto").val();
-        var idCategoria = $("#selectCategoriaform option:selected" ).val();
-
+    function cargarDatosUsuarioSelect() {
         var objData = new FormData();
-        objData.append("guardarcantidadProducto", cantidadProducto);
-        objData.append("guardarvalorProducto", valorProducto);
-        objData.append("guardardescripcionProducto", descripcionProducto);
-        objData.append("guardarNombreProducto", NombreProducto);
-        objData.append("idCategoria", idCategoria);
-        
-
+        objData.append("mostrarUsuarios", "ok");
         $.ajax({
-            url: "../../controlador/tareaControlador.php",
-            type: "POST",
-            dataType: "JSON",
+            url: "../controlador/tareaControlador.php",
+            type: "post",
+            dataType: "json",
             data: objData,
             cache: false,
             contentType: false,
             processData: false
         }).done(function(respuesta) {
+            var opciones = '';
+            respuesta.forEach(agregarOpciones);
+
+            function agregarOpciones(item, index) {
+                opciones += '<option value="' + item.idUsuario + '">' + item.Nombres + '</option>';
+
+            }
+ 
+            $("#selectusuarioform").html(opciones)
             
-            $("#txt_cantidadProducto").val("");
-            $("#txt_valorProducto").val("");
-            $("#txt_descripcionProducto").val("");
-            $("#txt_NombreProducto").val("");
-            $("#selectCategoriaform option:selected" ).val("");
-
-            Swal.fire({
-                position: 'top-end',
-                icon: 'success',
-                title: 'Producto registrado correctamente',
-                showConfirmButton: false,
-                timer: 1500
-            })
-
-            listarDatos();
         })
-    })
-
-
-    function listarDatos() {
-   
+    }
+    // ---------------------------- Listar los datos de la tabla Tareas -----------
+    function listarDatosTarea() {
         var objData = new FormData();
-        objData.append("listarDatos", "ok");
+        objData.append("listarDatosTarea", "ok");
         $.ajax({
-            url: "../../controlador/tareaControlador.php",
+            url: "../controlador/tareaControlador.php",
             type: "POST",
             dataType: "JSON",
             data: objData,
@@ -67,44 +47,119 @@ $(function() {
             contentType: false,
             processData: false
         }).done(function(respuesta) {
-           
             var objBotones = '';
             dataSet = [];
+
+            respuesta.forEach(listarTarea);
+            function listarTarea(item, index) {
+                
+                objBotones = '<div class="btn-group">';
+                objBotones += '<button id="btn-EditarProducto" type="button" class="btn btn-warning" idTarea="' + item.idTarea +  '" Nombre="' + item.Nombre + '" Descripcion="' + item.Descripcion + '" Prioridad= "' + item.Prioridad + '" Tiempo="' + item.Tiempo + + '" Nombres="' + item.Nombres +'"><i class="bi bi-pencil-square"></i></button>';
+                objBotones += '<button id="btn-eliminar" type="button" idTarea="' + item.idTarea + '" class="btn btn-danger"><i class="bi bi-trash"></i></button>';
+                objBotones += '</div>';
+
             
-            if (respuesta != null) {
-                respuesta.forEach(listarProducto);
                 
-                function listarProducto(item, index) {
-                    
-                    objBotones = '<div class="btn-group">';
-                    objBotones += '<button id="btn-EditarProducto" type="button" class="btn btn-warning" Producto="' + item.idProducto +  '" cantidadProducto="' + item.cantidadProducto + '" valorProducto="' + item.valorProducto + '" descripcionProducto= "' + item.descripcionProducto + '" NombreProducto="' + item.NombreProducto + '"><i class="bi bi-person-fill-gear"></i></button>';
-                    objBotones += '<button id="btn-eliminar" type="button" Producto="' + item.idProducto + '" class="btn btn-danger"><i class="bi bi-person-fill-x"></i></button>';
-                    objBotones += '</div>';
-
-                
-                    
-                    dataSet.push([item.cantidadProducto, item.valorProducto, item.descripcionProducto, item.NombreProducto, objBotones]);
-                }
-
-                cargarTablaProducto(dataSet);
+                dataSet.push([item.Nombre, item.Descripcion, item.Prioridad, item.Tiempo, item.Nombres, objBotones]);
             }
-
+            cargarTablaTarea(dataSet);
         })
     }
 
+    // -------------------------- Agregar nueva tarea --------------------------
 
-    function cargarTablaProducto(dataSet) {
+    $("#btnGuardarActividad").on("click", function() {
+        var Nombre = $("#txt_nombre").val();
+        var Descripcion = $("#txt_descripcion").val();
+        var Prioridad = $("#selectprioridadform").val();
+        var Tiempo = $("#txt_tiempoHoras").val();
+        var fk_Usuario = $("#selectusuarioform").val();
+
+        var objData = new FormData();
+        objData.append("guardarNombre", Nombre);
+        objData.append("guardarDescripcion", Descripcion);
+        objData.append("guardarPrioridad", Prioridad);
+        objData.append("guardarTiempo", Tiempo);
+        objData.append("guardaridUsuario", fk_Usuario);
+        $.ajax({
+            url: "../controlador/tareaControlador.php",
+            type: "post",
+            dataType: "json",
+            data: objData,
+            cache: false,
+            contentType: false,
+            processData: false
+        }).done(function(respuesta) {
+            $("#txt_nombre").val("");
+            $("#txt_descripcion").val("");
+            $("#selectprioridadform").val("");
+            $("#txt_tiempoHoras").val("");
+            $("#selectusuarioform").val("");
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Tarea Registrado Correctamente',
+                showConfirmButton: false,
+                timer: 1500
+            })
+            listarDatosTarea();
+        })
+    })
+
+    //ELIMINAR REGISTRO USUARIO
+    $("#tablaActividad").on("click", "#btn-eliminar", function() {
+        Swal.fire({
+            title: 'Esta seguro de eliminar este Tarea?',
+            text: "Al eliminarlo no sera posible recuperar la información!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Aceptar',
+            cancelButtonText: 'Cancelar'
+        }).then(async(result) => {
+            if (result.isConfirmed) {
+                var idTarea = $(this).attr("idTarea");
+                var objData = new FormData();
+                objData.append("eliminarTarea", idTarea);
+                $.ajax({
+                    url: "../controlador/tareaControlador.php",
+                    type: "POST",
+                    dataType: "JSON",
+                    data: objData,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function(respuesta) {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Usuario Eliminado correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    formularioTarea = false
+                    listarDatosTarea();
+                })
+            }
+        })
+
+    })
+
+    // --------------------------- Cargar Tabla -----------------------
+    function cargarTablaTarea(dataSet) {
          
         if (objTabla != null) {
-            $("#tablaProducto").dataTable().fnDestroy();
+            $("#tablaActividad").dataTable().fnDestroy();
         }
 
-        objTabla = $("#tablaProducto").DataTable({
+        objTabla = $("#tablaActividad").DataTable({
             data: dataSet
         })
     }
 
-
+/*
+    
     $("#btn_formulario").on("click", function() {
 
         $("#datosTablaProducto").html("");
@@ -154,17 +209,17 @@ $(function() {
         alert(idUsuario);
         alert(formularioEditar);*/
        
-        if (ProductoActual != idProducto){
+        /*if (ProductoActual != idProducto){
             
             ProductoActual = idProducto;
             formularioEditar= false;
-        }
+        }*/
        
         /*alert(usuarioActual);
         alert(idUsuario);
         alert(formularioEditar);*/
 
-        $("#contenedorFormulario").hide();
+        /*$("#contenedorFormulario").hide();
 
         if (formularioEditar == false){
             $("#contenedorFormularioEditar").fadeIn(1000);
@@ -249,55 +304,7 @@ $(function() {
     })
 
 
-    //ELIMINAR REGISTRO USUARIO
-    $("#tablaProducto").on("click", "#btn-eliminar", function() {
-        var idProducto = $(this).attr("Producto");
-
-        Swal.fire({
-            title: 'Esta seguro de eliminar este Producto?',
-            text: "Al eliminarlo no sera posible recuperar la información!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Aceptar',
-            cancelButtonText: 'Cancelar'
-        }).then(async(result) => {
-            if (result.isConfirmed) {
-                var objData = new FormData();
-                 
-                objData.append("eliminarId", idProducto);
-                $.ajax({
-                    url: "./control/ProductoControl.php",
-                    type: "POST",
-                    dataType: "JSON",
-                    data: objData,
-                    cache: false,
-                    contentType: false,
-                    processData: false
-                }).done(function(respuesta) {
-            
-                    $("#txt_cantidadProducto").val("");
-                    $("#txt_valorProducto").val("");
-                    $("#txt_descripcionProducto").val("");
-                    $("#txt_NombreProducto").val("");
-                   
-                    
-                    Swal.fire({
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Usuario Eliminado correctamente',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-            
-                    listarDatos();
-                })
-            }
-        })
-        $("#contenedorTabla").show();
-        cargarTablaProducto(dataSet);
-    })
+    
 
     function cargarDatosSelectCategoriaform(){
         
@@ -417,5 +424,5 @@ $(function() {
             data: dataSetCategoria
         })
     }
-
+    */
 })

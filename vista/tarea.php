@@ -24,9 +24,9 @@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
-    <link rel='stylesheet' type='text/css' media='screen' href='vista/css/main.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='css/main.css'>
 
-    <script src='vista/js/producto.js'></script>
+    <script src='js/tarea.js'></script>
    
 
     
@@ -43,7 +43,7 @@
 
 
     <div class="row">
-        <div class="col-sm-4" id="contenedorFormulario" style="display: none;">
+        <div class="col-sm-4" id="contenedorFormulario" >
             <div class="container">
                 <form method="post" class="needs-validation">
                     
@@ -64,6 +64,9 @@
                     <div class="mb-3">
                         <label for="pwd" class="form-label">Seleccione la Prioridad</label>
                         <select select id="selectprioridadform" class="form-select" aria-label="Default select example">
+                            <option>Alta</option>
+                            <option>Media</option>
+                            <option>Baja</option>
                         </select>
                     </div>
 
@@ -77,7 +80,7 @@
                     <div class="mb-3">
                         <label for="pwd" class="form-label">Seleccione el Usuario</label>
                         <select select id="selectusuarioform" class="form-select" aria-label="Default select example">
-                    
+                            
                         </select>
                     </div>
 
@@ -138,6 +141,7 @@
                         <th>Descripcion</th>
                         <th>Prioridad</th>
                         <th>Tiempo</th>
+                        <th>Usuario</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>

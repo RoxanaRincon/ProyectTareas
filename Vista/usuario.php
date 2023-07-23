@@ -24,30 +24,34 @@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
-    <link rel='stylesheet' type='text/css' media='screen' href='vista/css/main.css'>
-
-    <script src='vista/js/producto.js'></script>
-   
-
-    
+    <link rel='stylesheet' type='text/css' media='screen' href=''>
 </head>
 
 <body>
     <div class="container mt-5">
-
+    
+    <!-- -----------------  btn usuario ------------ -->
     <div class="row">
-        <div class="col-sm-4" id="contenedorFormularios" style="display: none;">
+        <div class="mb-3 mt-3">
+            <button id="btnUsuario" type="button" class="btn btn-primary">Registrar Usuario</button>
+        </div>
+    </div>
+
+    
+    <!-- --------------- formulario usuario ----------- -->
+    <div class="row">
+        <div class="col-sm-4" id="contenedorFormularios" >
             <div class="container">
                 <form method="post" class="needs-validation">
                     <div class="mb-3 mt-3">
-                        <label for="uname" class="form-label">Nombre Usuario:</label>
+                        <label for="uname" class="form-label">Nombres Usuario:</label>
                         <input type="text" class="form-control" id="txt_nombreusuario" placeholder="Ingrese el Usuario" name="txt_nombreusuario" required>
                         <div class="valid-feedback">Valid.</div>
                         <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="pwd" class="form-label">Apellido Usuario:</label>
+                        <label for="pwd" class="form-label">Apellidos Usuario:</label>
                         <input type="text" class="form-control" id="txt_apellidousuario" placeholder="Ingrese la descripcion" name="txt_apellidousuario" required>
                         <div class="valid-feedback">Valid.</div>
                         <div class="invalid-feedback">Please fill out this field.</div>
@@ -73,6 +77,7 @@
                         <th>Nombre Usuario</th>
                         <th>Apellido Usuario </th>
                         <th>Correo </th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="datosTablaUsuario">
@@ -83,6 +88,7 @@
 
     </div>
 
+    <script src='js/usuario.js'></script>
 </body>
 
 </html>
