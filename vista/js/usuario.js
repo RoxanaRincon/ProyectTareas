@@ -54,7 +54,7 @@ $(function(){
         })
     }
 
-    // ----------------------------- Guardar nuevo usuario ---------------------- 
+    // --------------------------------- Guardar nuevo usuario --------------------------- 
     $("#btnGuardarUsuario").on("click", function() {
         var Nombres = $("#txt_nombreusuario").val();
         var Apellidos = $("#txt_apellidousuario").val();
@@ -88,7 +88,7 @@ $(function(){
         })
     })
 
-    //------------------------- Editar Usuario ----------------------
+    //------------------------------ Editar Usuario ---------------------------
     $("#tablaUsuario").on("click", "#btn-EditarUsuario", function(){
         $("#contenedorFormularios").hide();
         $("#contenedorEditarUsuario").show();
@@ -97,7 +97,6 @@ $(function(){
         var Apellidos = $(this).attr("Apellidos");
         var Correo = $(this).attr("Correo");
         
-
         $("#txt_EditNombre").val(Nombres);
         $("#txt_EditApellido").val(Apellidos);
         $("#txt_EditCorreo").val(Correo);
@@ -169,16 +168,24 @@ $(function(){
                 showConfirmButton: false,
                 timer: 1500
             })
-
-            listarDatosUsuario();
+        
+        listarDatosUsuario();
     })
    
     $("#contenedorTablaUsuario").show();
-    cargarTablaUsuario(dataSetUsuario);
+        cargarTablaUsuario(dataSetUsuario);
 
     })
 
-    // boton registarr usuario
+    $("#btnCancelar").on("click", function(){
+        $("#contenedorEditarUsuario").hide();
+
+        $("#contenedorTablaUsuario").show();
+        cargarTablaUsuario(dataSetUsuario);
+    })
+
+    //-----------------------------boton registar usuario--------------------------
+
     $("#btnUsuario").on("click", function() {
         $("#contenedorEditarUsuario").hide();
         $("#datosTablaUsuario").html("");
