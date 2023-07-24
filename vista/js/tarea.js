@@ -265,7 +265,6 @@ $(function() {
             formulario = false;
         }
 
-
         $("#datosTablaActividad").slideDown("slow");
         cargarTablaTarea(dataSet);
        
