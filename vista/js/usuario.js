@@ -178,8 +178,8 @@ $(function(){
                 showConfirmButton: false,
                 timer: 1500
             })
-
-            listarDatosUsuario();
+        
+        listarDatosUsuario();
     })
    
     $("#contenedorTablaUsuario").show();
@@ -256,14 +256,10 @@ $(function(){
 
 
                     }
-
-
-
                     formularioEmpleados = false;
                     listarDatosUsuario();
                 })
             }
         })
     })
-   
 })

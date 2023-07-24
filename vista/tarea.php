@@ -78,13 +78,13 @@ include_once "sesion.php";
 
     <div class="row">
         <div class="mb-3 mt-3">
-            <button id="btn_formulario" type="button" class="btn btn-primary">Registrar Tarea</button>
+            <button id="btn_Tarea" type="button" class="btn btn-primary">Registrar Tarea</button>
         </div>
     </div>
 
 
     <div class="row">
-        <div class="col-sm-4" id="contenedorFormulario" >
+        <div class="col-sm-4" id="contenedorFormulario" style="display: none;">
             <div class="container">
                 <form method="post" class="needs-validation">
                     
@@ -142,15 +142,18 @@ include_once "sesion.php";
                     </div>
 
                     <div class="mb-3">
-                        <label for="pwd" class="form-label">Descripcion</label>
+                        <label for="pwd" class="form-label">Descripcion:</label>
                         <input type="text" class="form-control" id="txt_Editdescripcion" placeholder="Ingrese la descripcion" name="txt_Editdescripcion" required>
                         <div class="valid-feedback">Valid.</div>
                         <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="pwd" class="form-label">Seleccione la Prioridad</label>
+                        <label for="pwd" class="form-label">Seleccione la Prioridad:</label>
                         <select select id="Editselectprioridadform" class="form-select" aria-label="Default select example">
+                            <option>Alta</option>
+                            <option>Media</option>
+                            <option>Baja</option>
                         </select>
                     </div>
 
@@ -162,7 +165,7 @@ include_once "sesion.php";
                     </div>
 
                     <div class="mb-3">
-                        <label for="pwd" class="form-label">Seleccione el Usuario</label>
+                        <label for="pwd" class="form-label">Seleccione el Usuario:</label>
                         <select select id="Editselectusuarioform" class="form-select" aria-label="Default select example">
                         </select>
                     </div>

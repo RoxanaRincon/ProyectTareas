@@ -10,7 +10,7 @@ class mdlTarea {
 
         try{
             $respuestaTarea= Conexion::conectar()->prepare("SELECT actividad.idTarea, actividad.Nombre, actividad.Descripcion, actividad.Prioridad 
-            , actividad.Tiempo, usuario.Nombres FROM actividad INNER JOIN usuario ON actividad.fk_Usuario = usuario.idUsuario ");
+            , actividad.Tiempo,actividad.fk_Usuario, usuario.Nombres FROM actividad INNER JOIN usuario ON actividad.fk_Usuario = usuario.idUsuario ");
             $respuestaTarea->execute();
             $listarTarea = $respuestaTarea->fetchAll();
             $respuestaTarea= null;
@@ -80,6 +80,30 @@ class mdlTarea {
             $mensaje = $error;
         }
 
+        return $mensaje;
+    }
+
+    public static function mdlEditarTarea($idTarea, $Nombre, $Descripcion, $Prioridad, $Tiempo, $fk_Usuario){
+        $mensaje = "";
+                
+        try{
+            $respuestaGTarea= Conexion::conectar()->prepare("UPDATE  actividad  SET Nombre = :Nombre, Descripcion = :Descripcion, Prioridad = :Prioridad, Tiempo = :Tiempo, fk_Usuario = :fk_Usuario WHERE idTarea = :idTarea"); 
+            $respuestaGTarea->bindParam(":Nombre", $Nombre);
+            $respuestaGTarea->bindParam(":Descripcion", $Descripcion);
+            $respuestaGTarea->bindParam(":Prioridad", $Prioridad);
+            $respuestaGTarea->bindParam(":Tiempo", $Tiempo);
+            $respuestaGTarea->bindParam(":fk_Usuario", $fk_Usuario);
+            $respuestaGTarea->bindParam(":idTarea", $idTarea);
+            if($respuestaGTarea->execute()){
+                $mensaje = "ok";
+            }else{
+                $mensaje = "Error al registrar la tarea";
+            }
+
+        }catch(Exception $error){
+            $mensaje = $error;
+
+        }
         return $mensaje;
     }
     

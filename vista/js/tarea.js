@@ -2,14 +2,13 @@ $(function() {
 
     var objTabla = null;
     var dataSet = [];
+    var tareaActual = '';
     var formulario = false;
     var formularioEditar = false;
-    var ProductoActual= '';
     cargarDatosUsuarioSelect();
     listarDatosTarea();
 
-    // ------------------------- listar el selct de usuarios -----------
-
+    // ------------------------- listar el select de usuarios -----------
     function cargarDatosUsuarioSelect() {
         var objData = new FormData();
         objData.append("mostrarUsuarios", "ok");
@@ -31,9 +30,11 @@ $(function() {
             }
  
             $("#selectusuarioform").html(opciones)
+            $("#Editselectusuarioform").html(opciones)
             
         })
     }
+
     // ---------------------------- Listar los datos de la tabla Tareas -----------
     function listarDatosTarea() {
         var objData = new FormData();
@@ -54,20 +55,19 @@ $(function() {
             function listarTarea(item, index) {
                 
                 objBotones = '<div class="btn-group">';
-                objBotones += '<button id="btn-EditarProducto" type="button" class="btn btn-warning" idTarea="' + item.idTarea +  '" Nombre="' + item.Nombre + '" Descripcion="' + item.Descripcion + '" Prioridad= "' + item.Prioridad + '" Tiempo="' + item.Tiempo + + '" Nombres="' + item.Nombres +'"><i class="bi bi-pencil-square"></i></button>';
+                objBotones += '<button id="btn-EditarTarea" type="button" class="btn btn-warning" idTarea="' + item.idTarea +  '" Nombre="' + item.Nombre + '" Descripcion="' + item.Descripcion + '" Prioridad= "' + item.Prioridad + '" Tiempo="' + item.Tiempo + '" fk_Usuario="' + item.fk_Usuario +'" Nombres="' + item.Nombres +'"><i class="bi bi-pencil-square"></i></button>';
                 objBotones += '<button id="btn-eliminar" type="button" idTarea="' + item.idTarea + '" class="btn btn-danger"><i class="bi bi-trash"></i></button>';
                 objBotones += '</div>';
 
             
-                
                 dataSet.push([item.Nombre, item.Descripcion, item.Prioridad, item.Tiempo, item.Nombres, objBotones]);
             }
             cargarTablaTarea(dataSet);
         })
     }
 
-    // -------------------------- Agregar nueva tarea --------------------------
 
+    // -------------------------- Agregar nueva tarea --------------------------
     $("#btnGuardarActividad").on("click", function() {
         var Nombre = $("#txt_nombre").val();
         var Descripcion = $("#txt_descripcion").val();
@@ -106,7 +106,7 @@ $(function() {
         })
     })
 
-    //ELIMINAR REGISTRO USUARIO
+    //----------------------------------- Eliminar tareas -------------------------
     $("#tablaActividad").on("click", "#btn-eliminar", function() {
         Swal.fire({
             title: 'Esta seguro de eliminar este Tarea?',
@@ -146,6 +146,132 @@ $(function() {
 
     })
 
+
+    // --------------------------- Treer tarea a editar ----------------------
+    $("#tablaActividad").on("click", "#btn-EditarTarea", function(){
+        $("#contenedorFormularios").hide();
+        $("#contenedorEditarUsuario").show();
+        var tarea = $(this).attr("idTarea");
+        var Nombre = $(this).attr("Nombre");
+        var Descripcion = $(this).attr("Descripcion");
+        var Prioridad = $(this).attr("Prioridad");
+        var Tiempo = $(this).attr("Tiempo");
+        var fk_Usuario = $(this).attr("fk_Usuario");
+        
+    
+        $("#txt_Editnombre").val(Nombre);
+        $("#txt_Editdescripcion").val(Descripcion);
+        $("#Editselectprioridadform").val(Prioridad);
+        $("#txt_EdittiempoHoras").val(Tiempo);
+        $("#Editselectusuarioform").val(fk_Usuario);
+        $("#btnEditarTarea").attr("tarea", tarea);
+        
+        if (tareaActual != tarea){
+            
+            tareaActual = tarea;
+            formularioEditar = false;
+        }
+
+        if (formularioEditar == false){
+            $("#contenedorFormularioEditar").fadeIn(1000);
+            
+            formularioEditar = true;
+        } else {
+            $("#contenedorFormularioEditar").hide();
+          
+            formularioEditar = false;
+        }
+
+        $("#contenedorTabla").show();
+        cargarTablaTarea(dataSet);
+
+    })
+
+
+    // ----------------------------- Editar Tarea --------------------
+    $("#btnEditarTarea").on("click", function(){
+
+        var idTarea = tareaActual;
+
+        var Nombre = $("#txt_Editnombre").val();
+        var Descripcion = $("#txt_Editdescripcion").val();
+        var Prioridad = $("#Editselectprioridadform").val();
+        var Tiempo = $("#txt_EdittiempoHoras").val();
+        var fk_Usuario = $("#Editselectusuarioform").val();
+
+        var registroEditadoTarea = new FormData();
+        registroEditadoTarea.append("editarNombre", Nombre);
+        registroEditadoTarea.append("editarDescripcion", Descripcion);
+        registroEditadoTarea.append("editarPrioridad", Prioridad);
+        registroEditadoTarea.append("editarTiempo", Tiempo);
+        registroEditadoTarea.append("editarIdUsuario", fk_Usuario);
+        registroEditadoTarea.append("editarIdTarea", idTarea);
+
+        $.ajax({
+            url: "../controlador/tareaControlador.php",
+            type: "POST",
+            dataType: "JSON",
+            data: registroEditadoTarea,
+            cache: false,
+            contentType: false,
+            processData: false
+        }).done(function(respuesta) {
+
+            console.log(respuesta);
+            $("#txt_Editnombre").val("");
+            $("#txt_Editdescripcion").val("");
+            $("#Editselectprioridadform").val("");
+            $("#txt_EdittiempoHoras").val("");
+            $("#Editselectusuarioform").val("");
+           
+            
+            $("#contenedorFormularioEditar").hide();
+
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Tarea Actualizado correctamente',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        
+        listarDatosTarea();
+    })
+    $("#contenedorFormularioEditar").show();
+        cargarTablaTarea(dataSet);
+
+    })    
+
+    $("#btnCancelar").on("click", function(){
+        $("#contenedorFormularioEditar").hide();
+
+        $("#contenedorTabla").show();
+        cargarTablaTarea(dataSet);
+    })
+
+
+    //----------------------------- boton registar tarea --------------------------
+    $("#btn_Tarea").on("click", function() {
+        $("#contenedorFormularioEditar").hide();
+        $("#datosTablaActividad").html("");
+
+        if (formulario == false) {
+            $("#contenedorFormulario").fadeIn(1000);
+            $("#contenedorTabla").removeClass('col-sm-12').addClass('col-sm-8');
+            formulario = true;
+        } else {
+            $("#contenedorFormulario").hide();
+            $("#datosTablaActividad").removeClass('col-sm-8').addClass('col-sm-12').hide();
+            formulario = false;
+        }
+
+
+        $("#datosTablaActividad").slideDown("slow");
+        cargarTablaTarea(dataSet);
+       
+    })
+
+    
     // --------------------------- Cargar Tabla -----------------------
     function cargarTablaTarea(dataSet) {
          
@@ -158,271 +284,4 @@ $(function() {
         })
     }
 
-/*
-    
-    $("#btn_formulario").on("click", function() {
-
-        $("#datosTablaProducto").html("");
-
-        if (formulario == false) {
-            $("#contenedorFormulario").fadeIn(1000);
-            $("#contenedorTabla").removeClass('col-sm-12').addClass('col-sm-8');
-            formulario = true;
-        } else {
-            $("#contenedorFormulario").hide();
-            $("#contenedorTabla").removeClass('col-sm-8').addClass('col-sm-12').hide();
-            formulario = false;
-        }
-
-
-        $("#contenedorTabla").slideDown("slow");
-        cargarTablaProducto(dataSet);
-        cargarDatosSelectCategoriaform();
-    })
-
-    $("#btnCancelar").on ("click", function (){
-        $("#contenedorFormularioEditar").hide();
-        $("#contenedorTabla").removeClass('col-sm-8').addClass('col-sm-12').hide();
-        $("#btn_formulario").removeClass("btn-danger").addClass('btn-primary').attr("disabled", true);
-        $("#contenedorTabla").show();
-        cargarTablaProducto(dataSet);
-    })
-
-
-    $("#tablaProducto").on("click", "#btn-EditarProducto", function(){
-        var idProducto = $(this).attr("Producto");
-        //alert(valorProductoUsuario);
-        var cantidadProductoProducto = $(this).attr("cantidadProducto");
-        var valorProductoProducto = $(this).attr("valorProducto");
-        var descripcionProductoProducto = $(this).attr("descripcionProducto");
-        var NombreProductoProducto = $(this).attr("NombreProducto");
-        
-
-        $("#txt_EditcantidadProducto").val(cantidadProductoProducto);
-        $("#txt_EditvalorProducto").val(valorProductoProducto);
-        $("#txt_EditdescripcionProducto").val(descripcionProductoProducto);
-        $("#txt_EditNombreProducto").val(NombreProductoProducto);
-        $("#btnEditarProducto").attr("Producto", idProducto);
-        
-        /*
-        alert(usuarioActual);
-        alert(idUsuario);
-        alert(formularioEditar);*/
-       
-        /*if (ProductoActual != idProducto){
-            
-            ProductoActual = idProducto;
-            formularioEditar= false;
-        }*/
-       
-        /*alert(usuarioActual);
-        alert(idUsuario);
-        alert(formularioEditar);*/
-
-        /*$("#contenedorFormulario").hide();
-
-        if (formularioEditar == false){
-            $("#contenedorFormularioEditar").fadeIn(1000);
-            $("#contenedorTabla").removeClass('col-sm-12').addClass('col-sm-8');
-            formularioEditar = true;
-            cargarDatosSelectCategoriaformEdit();
-        } else {
-            $("#contenedorFormularioEditar").hide();
-            $("#contenedorTabla").removeClass('col-sm-8').addClass('col-sm-12').hide();
-            $("#btn_formulario").removeClass('btn-danger').addClass('btn-primary').attr('disabled', true);
-            formularioEditar = false;
-        }
-
-        $("#contenedorTabla").show();
-        cargarTablaProducto(dataSet);
-
-    })
-
-
-    $("#bntCancelar").on("click", function(){
-        $("#contenedorFormularioEditar").hide();
-        $("#contenedorTabla").removeClass('col-sm-8').addClass('col-sm-12').hide();
-        $("#btn_formulario").removeClass('btn-danger').addClass('btn-primary').attr('disabled', true);
-
-        $("#contenedorTabla").show();
-        cargarTablaProducto(dataSet);
-    })
-
-    //EDITAR REGISTRO USUARIO
-    $("#btnEditarProducto").on("click", function(){
-
-        var idProducto = ProductoActual;
-       
-        var cantidadProductoProducto = $("#txt_EditcantidadProducto").val();
-        var valorProductoProducto= $("#txt_EditvalorProducto").val();
-        var descripcionProductoProducto =  $("#txt_EditdescripcionProducto").val();
-        var NombreProductoProducto = $("#txt_EditNombreProducto").val();
-       var idCategoriaupdate = $("#selectCategoriaformedit option:selected" ).val();
-      
-        var objData = new FormData();
-        objData.append("updatecantidadProducto", cantidadProductoProducto);
-        objData.append("updatevalorProducto", valorProductoProducto);
-        objData.append("updatedescripcionProducto", descripcionProductoProducto);
-        objData.append("updateNombreProducto", NombreProductoProducto);
-        objData.append("updateId", idProducto);
-        objData.append("updateidCategoria", idCategoriaupdate);
-
-        console.log(cantidadProductoProducto,valorProductoProducto,descripcionProductoProducto,NombreProductoProducto,idProducto,idCategoriaupdate);
-
-        
-        $.ajax({
-            url: "./control/productoControl.php",
-            type: "POST",
-            dataType: "JSON",
-            data: objData,
-            cache: false,
-            contentType: false,
-            processData: false
-        }).done(function(respuesta) {
-            console.log("edicion");
-            console.log(respuesta);
-            $("#txt_cantidadProducto").val("");
-            $("#txt_valorProducto").val("");
-            $("#txt_descripcionProducto").val("");
-            $("#txt_NombreProducto").val("");
-          
-
-            Swal.fire({
-                position: 'top-end',
-                icon: 'success',
-                title: 'Usuario Actualizado correctamente',
-                showConfirmButton: false,
-                timer: 1500
-            })
-
-        listarDatos();
-    })
-   
-    $("#contenedorTabla").show();
-    cargarTablaProducto(dataSet);
-
-    })
-
-
-    
-
-    function cargarDatosSelectCategoriaform(){
-        
-        var ObjData= new FormData();
-        ObjData.append("listarDatosCategoria","ok");
-      
-        $.ajax({
-            url: "../../controlador/tareaControlador.php",
-            type: "POST",
-            dataType: "JSON",
-            data: ObjData,
-            cache: false,
-            contentType: false,
-            processData: false
-        }).done(function(respuesta){
-
-            
-            var opciones = '';
-           
-            if (respuesta != null) {
-            respuesta.forEach(agregarOpciones)
-            
-            function agregarOpciones(item, index){
-                
-                opciones = opciones + '<option value="' + item.idCategoria + '">' + item.nombrecategoria + '</option>';
-            }
-
-            $("#selectCategoriaform").html(opciones);
-        }
-
-        }).fail(function(xhr, status, error) {
-        
-        });
-    }
-
-   
-    function cargarDatosSelectCategoriaformEdit(){
-        
-        var ObjData= new FormData();
-        ObjData.append("listarDatosCategoria","ok");
-      
-        $.ajax({
-            url: "../../controlador/tareaControlador.php",
-            type: "POST",
-            dataType: "JSON",
-            data: ObjData,
-            cache: false,
-            contentType: false,
-            processData: false
-        }).done(function(respuesta){
-
-            
-            var opciones = '';
-           
-            if (respuesta != null) {
-            respuesta.forEach(agregarOpciones)
-            
-            function agregarOpciones(item, index){
-                
-                opciones = opciones + '<option value="' + item.idCategoria + '">' + item.nombrecategoria + '</option>';
-            }
-
-            $("#selectCategoriaformedit").html(opciones);
-        }
-
-        }).fail(function(xhr, status, error) {
-        
-        });
-    }
-
-
-    $("#selectCategorias").change(function(){
-        var idCategoria = $(this).val();
-        var objData = new FormData();
-        objData.append("filtroCategoria", idCategoria);
-        
-
-        $.ajax({
-            url: "../../controlador/tareaControlador.php",
-            type:"POST",
-            dataType: "JSON",
-            data: objData,
-            cache: false,
-            contentType: false,
-            processData: false
-        }).done(function(respuesta){
-            
-            dataSetCategoria = [];
-        
-            var botonAcciones = '';
-       
-            respuesta.forEach(cargarFiltroProducto);
-
-            function cargarFiltroProducto(item, index){
-
-                objBotones = '<div class="btn-group">';
-                objBotones += '<button id="btn-EditarProducto" type="button" class="btn btn-warning" Producto="' + item.idProducto +  '" cantidadProducto="' + item.cantidadProducto + '" valorProducto="' + item.valorProducto + '" descripcionProducto= "' + item.descripcionProducto + '" NombreProducto="' + item.NombreProducto + '"><i class="bi bi-person-fill-gear"></i></button>';
-                objBotones += '<button id="btn-eliminar" type="button" Producto="' + item.idProducto + '" class="btn btn-danger"><i class="bi bi-person-fill-x"></i></button>';
-                objBotones += '</div>';
-                
-                dataSetCategoria.push([item.cantidadProducto, item.valorProducto, item.descripcionProducto, item.NombreProducto, objBotones]);
-            }
-
-            actualizarTabla(dataSetCategoria)
-        })
-
-    })
-
-    
-    function actualizarTabla(dataSetCategoria) {
-         
-        if (objTabla != null) {
-            $("#tablaProducto").dataTable().fnDestroy();
-        }
-
-        objTabla = $("#tablaProducto").DataTable({
-            data: dataSetCategoria
-        })
-    }
-    */
 })
