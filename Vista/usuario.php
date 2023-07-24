@@ -1,3 +1,9 @@
+<?php
+// tarea.php
+
+include_once "sesion.php";
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -28,6 +34,40 @@
 </head>
 
 <body>
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Mi Sitio Web</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="tarea.php">Tareas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="usuario.php">Usuarios</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="cerrarsesion.php">Cerrar Sesión</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+       
+
+
+
+
+
     <div class="container mt-5">
     
     <!-- -----------------  btn usuario ------------ -->
@@ -64,6 +104,13 @@
                         <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
+                    <div class="mb-3">
+                    <label for="pwd" class="form-label">Contraseña:</label>
+                    <input type="password" class="form-control" id="txt_password" placeholder="Ingrese la contraseña" name="txt_password" required>
+                    <div class="valid-feedback">Valid.</div>
+                    <div class="invalid-feedback">Please fill out this field.</div>
+                </div>
+
                     <button type="button" id="btnGuardarUsuario" class="btn btn-primary">Enviar</button>
                 </form>
             </div>
@@ -94,6 +141,13 @@
                         <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
 
+                    <div class="mb-3">
+                    <label for="pwd" class="form-label">Contraseña:</label>
+                    <input type="password" class="form-control" id="txt_EditPassword" placeholder="Ingrese la nueva contraseña" name="txt_EditPassword" required>
+                    <div class="valid-feedback">Valid.</div>
+                    <div class="invalid-feedback">Please fill out this field.</div>
+                </div>
+
                     <button type="button" id="btnEditarUsuario" Producto="" class="btn btn-primary">Editar Usuario</button>
                     <button type="button" id="btnCancelar" Producto="" class="btn btn-success">Cancelar</button>
                 </form>
@@ -119,6 +173,7 @@
 
     </div>
 
+    </div>
     <script src='js/usuario.js'></script>
 </body>
 

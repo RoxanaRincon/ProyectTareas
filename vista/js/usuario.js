@@ -29,10 +29,10 @@ $(function(){
             console.log(respuesta)
             function listarUsuario(item, index) {
                 objBotones = '<div class="btn-group">';
-                objBotones += '<button id="btn-EditarUsuario" type="button" class="btn btn-secondary" usuario="' + item.idUsuario +  '" Nombres="' + item.Nombres + '" Apellidos="' + item.Apellidos + '" Correo="' + item.Correo + '"><i class="bi bi-pencil-square"></i></button>';
-                objBotones += '<button id="btn-eliminarUsuario" type="button" class="btn btn-dark" usuario="' + item.idUsuario + '" ><i class="bi bi-trash"></i></button>';
+                objBotones += '<button id="btn-EditarUsuario" type="button" class="btn btn-secondary" usuario="' + item.idUsuario + '" Nombres="' + item.Nombres + '" Apellidos="' + item.Apellidos + '" Correo="' + item.Correo + '" password="' + item.password + '"><i class="bi bi-pencil-square"></i></button>';
+                objBotones += '<button id="btn-eliminarUsuario" type="button" class="btn btn-dark" usuario="' + item.idUsuario + '"><i class="bi bi-trash"></i></button>';
                 objBotones += '</div>';
-
+            
                 dataSetUsuario.push([item.Nombres, item.Apellidos, item.Correo, objBotones]);
                 console.log(dataSetUsuario);
             }
@@ -54,16 +54,19 @@ $(function(){
         })
     }
 
-    // --------------------------------- Guardar nuevo usuario --------------------------- 
+    // ----------------------------- Guardar nuevo usuario ---------------------- 
     $("#btnGuardarUsuario").on("click", function() {
         var Nombres = $("#txt_nombreusuario").val();
         var Apellidos = $("#txt_apellidousuario").val();
         var Correo = $("#txt_correo").val();
-
+        var Password = $("#txt_password").val(); // Obtener la contraseña ingresada
+    
         var objData = new FormData();
         objData.append("guardarNombres", Nombres);
         objData.append("guardarApellidos", Apellidos);
         objData.append("guardarCorreo", Correo);
+        objData.append("guardarPassword", Password); // Agregar la contraseña al objeto FormData
+    
         $.ajax({
             url: "../controlador/usuarioControlador.php",
             type: "post",
@@ -76,20 +79,27 @@ $(function(){
             $("#txt_nombreusuario").val("");
             $("#txt_apellidousuario").val("");
             $("#txt_correo").val("");
+            $("#txt_password").val(""); // Limpiar el campo de contraseña
+    
             Swal.fire({
                 position: 'top-end',
                 icon: 'success',
-                title: 'Usuario  Registrado Correctamente',
+                title: 'Usuario Registrado Correctamente',
                 showConfirmButton: false,
                 timer: 1500
             })
             listarDatosUsuario();
-            
-        })
-    })
+    
+        }).fail(function(xhr, status, error) {
+            // Manejar el error en caso de que falle la petición AJAX
+            console.log(xhr, status, error);
+        });
+    });
 
-    //------------------------------ Editar Usuario ---------------------------
+    //------------------------- Editar Usuario ----------------------
     $("#tablaUsuario").on("click", "#btn-EditarUsuario", function(){
+
+       
         $("#contenedorFormularios").hide();
         $("#contenedorEditarUsuario").show();
         var usuario = $(this).attr("usuario");
@@ -97,6 +107,7 @@ $(function(){
         var Apellidos = $(this).attr("Apellidos");
         var Correo = $(this).attr("Correo");
         
+
         $("#txt_EditNombre").val(Nombres);
         $("#txt_EditApellido").val(Apellidos);
         $("#txt_EditCorreo").val(Correo);
@@ -129,18 +140,18 @@ $(function(){
     //editar  registro de usuario
     $("#btnEditarUsuario").on("click", function(){
         var idUsuario = usuarioActual;
-       
         var Nombres = $("#txt_EditNombre").val();
         var Apellidos = $("#txt_EditApellido").val();
         var Correo =  $("#txt_EditCorreo").val();
-        
-
+        var Password =  $("#txt_EditPassword").val(); // Obtener el valor de la contraseña
+    
         var registroEditado = new FormData();
-        
         registroEditado.append("updateNombres", Nombres);
         registroEditado.append("updateApellidos", Apellidos);
         registroEditado.append("updateCorreo", Correo);
+        registroEditado.append("updatePassword", Password); // Agregar la contraseña al FormData
         registroEditado.append("updateIdUsuario", idUsuario);
+    
    
         $.ajax({
             url: "../controlador/usuarioControlador.php",
@@ -152,7 +163,6 @@ $(function(){
             processData: false
         }).done(function(respuesta) {
 
-             console.log(respuesta);
              $("#txt_EditNombre").val("");
              $("#txt_EditApellido").val("");
             $("#txt_EditCorreo").val("");
@@ -173,21 +183,14 @@ $(function(){
     })
    
     $("#contenedorTablaUsuario").show();
-        cargarTablaUsuario(dataSetUsuario);
+    cargarTablaUsuario(dataSetUsuario);
 
     })
 
-    $("#btnCancelar").on("click", function(){
-        $("#contenedorEditarUsuario").hide();
-
-        $("#contenedorTablaUsuario").show();
-        cargarTablaUsuario(dataSetUsuario);
-    })
-
-    //-----------------------------boton registar usuario--------------------------
+    // boton registarr usuario
 
     $("#btnUsuario").on("click", function() {
-        $("#contenedorEditarUsuario").hide();
+
         $("#datosTablaUsuario").html("");
 
         if (formulario == false) {
