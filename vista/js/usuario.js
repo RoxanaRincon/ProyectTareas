@@ -90,8 +90,6 @@ $(function(){
 
     //------------------------- Editar Usuario ----------------------
     $("#tablaUsuario").on("click", "#btn-EditarUsuario", function(){
-
-       
         $("#contenedorFormularios").hide();
         $("#contenedorEditarUsuario").show();
         var usuario = $(this).attr("usuario");
@@ -181,7 +179,6 @@ $(function(){
     })
 
     // boton registarr usuario
-
     $("#btnUsuario").on("click", function() {
         $("#contenedorEditarUsuario").hide();
         $("#datosTablaUsuario").html("");
@@ -249,15 +246,14 @@ $(function(){
 
 
                     }
-
-
-
                     formularioEmpleados = false;
                     listarDatosUsuario();
                 })
             }
         })
     })
+
+
     //cargarDatosSelectUsuario();
    // listarProducto();
 

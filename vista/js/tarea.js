@@ -31,6 +31,7 @@ $(function() {
             }
  
             $("#selectusuarioform").html(opciones)
+            $("#Editselectusuarioform").html(opciones)
             
         })
     }
@@ -54,7 +55,7 @@ $(function() {
             function listarTarea(item, index) {
                 
                 objBotones = '<div class="btn-group">';
-                objBotones += '<button id="btn-EditarProducto" type="button" class="btn btn-warning" idTarea="' + item.idTarea +  '" Nombre="' + item.Nombre + '" Descripcion="' + item.Descripcion + '" Prioridad= "' + item.Prioridad + '" Tiempo="' + item.Tiempo + + '" Nombres="' + item.Nombres +'"><i class="bi bi-pencil-square"></i></button>';
+                objBotones += '<button id="btn-EditarTarea" type="button" class="btn btn-warning" idTarea="' + item.idTarea +  '" Nombre="' + item.Nombre + '" Descripcion="' + item.Descripcion + '" Prioridad= "' + item.Prioridad + '" Tiempo="' + item.Tiempo + + '" Nombres="' + item.Nombres +'"><i class="bi bi-pencil-square"></i></button>';
                 objBotones += '<button id="btn-eliminar" type="button" idTarea="' + item.idTarea + '" class="btn btn-danger"><i class="bi bi-trash"></i></button>';
                 objBotones += '</div>';
 
@@ -145,6 +146,49 @@ $(function() {
         })
 
     })
+
+    // --------------------------- Editar tareas ----------------------
+    $("#tablaActividad").on("click", "#btn-EditarTarea", function(){
+        $("#contenedorFormularios").hide();
+        $("#contenedorEditarUsuario").show();
+        var tarea = $(this).attr("tarea");
+        var Nombre = $(this).attr("Nombre");
+        var Descripcion = $(this).attr("Descripcion");
+        var Prioridad = $(this).attr("Prioridad");
+        var Tiempo = $(this).attr("Tiempo");
+        var fk_Usuario = 
+        
+        
+
+        $("#txt_EditNombre").val(Nombres);
+        $("#txt_EditApellido").val(Apellidos);
+        $("#txt_EditCorreo").val(Correo);
+        $("#btnEditarUsuario").attr("usuario", usuario);
+        
+        if (usuarioActual != usuario){
+            
+            usuarioActual = usuario;
+            formularioEditar = false;
+        }
+
+       // $("#contenedorEditarUsuario").hide();
+
+        if (formularioEditar == false){
+            $("#contenedorEditarUsuarior").fadeIn(1000);
+            
+            formularioEditar = true;
+            //cargarDatosSelectCategoriaformEdit();
+        } else {
+            $("#contenedorEditarUsuarior").hide();
+          
+            formularioEditar = false;
+        }
+
+        $("#contenedorTablaUsuario").show();
+        cargarTablaUsuario(dataSetUsuario);
+
+    })
+
 
     // --------------------------- Cargar Tabla -----------------------
     function cargarTablaTarea(dataSet) {
