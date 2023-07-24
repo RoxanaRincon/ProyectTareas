@@ -40,7 +40,7 @@
     
     <!-- --------------- formulario usuario ----------- -->
     <div class="row">
-        <div class="col-sm-4" id="contenedorFormularios" >
+        <div class="col-sm-4" id="contenedorFormularios" style="display: none;" >
             <div class="container">
                 <form method="post" class="needs-validation">
                     <div class="mb-3 mt-3">
@@ -69,7 +69,7 @@
             </div>
         </div>
             
-
+        <!-- ----------------------------- Formulario Editar Usuario ----------------- -->
         <div class="col-sm-4" id="contenedorEditarUsuario" style="display: none;">
             <div class="container">
                 <form method="post" class="needs-validation">
@@ -100,6 +100,7 @@
             </div>
         </div>
 
+        <!-- ----------------------------- Tabla usuarios ----------------- -->
         <div class="col-sm-12" id="contenedorTablaUsuario">
             <table id="tablaUsuario" class="table">
                 <thead class="table-primary">

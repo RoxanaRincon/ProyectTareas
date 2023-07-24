@@ -37,13 +37,13 @@
 
     <div class="row">
         <div class="mb-3 mt-3">
-            <button id="btn_formulario" type="button" class="btn btn-primary">Registrar Tarea</button>
+            <button id="btn_Tarea" type="button" class="btn btn-primary">Registrar Tarea</button>
         </div>
     </div>
 
 
     <div class="row">
-        <div class="col-sm-4" id="contenedorFormulario" >
+        <div class="col-sm-4" id="contenedorFormulario" style="display: none;">
             <div class="container">
                 <form method="post" class="needs-validation">
                     
@@ -90,7 +90,7 @@
         </div>
 
 
-        <div class="col-sm-4" id="contenedorFormularioEditar">
+        <div class="col-sm-4" id="contenedorFormularioEditar" style="display: none;">
             <div class="container">
                 <form method="post" class="needs-validation">
                 <div class="mb-3">
